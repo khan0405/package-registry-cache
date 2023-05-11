@@ -1,0 +1,60 @@
+version: '3.1'
+name: cicd
+
+services:
+  # bitbucket ci/cd
+
+  # others ci/cd
+
+  # Alpine APK Registry Proxy
+  alpine-proxy:
+    container_name: alpine-proxy
+    image: cicd-alpine-proxy:1
+    build:
+      context: ./alpine-proxy
+    ports:
+      - 3030:3030
+    volumes:
+      - ./_data/alpine-proxy:/app/data
+    environment:
+      - PORT=3030
+      - REPOSITORY_URL=https://dl-cdn.alpinelinux.org
+
+  # Local Docker private registry
+  docker-registry:
+    container_name: docker-registry
+    image: cicd-docker-registry:1
+    build:
+      context: ./registry
+      dockerfile: Dockerfile
+    ports:
+      - 5000:5000
+    restart: unless-stopped
+    volumes:
+      - ./_data/registry:/var/lib/registry
+
+  # Local NPM private registry and proxy
+  verdaccio:
+    container_name: verdaccio
+    image: cicd-verdaccio:1
+    build:
+      context: ./verdaccio
+      dockerfile: Dockerfile
+    ports:
+      - 4873:4873
+    volumes:
+      - ./_data/verdaccio:/verdaccio/storage
+      - ./verdaccio/plugins:/verdaccio/plugins
+    restart: unless-stopped
+    environment:
+      NPM_TOKEN: /run/secrets/npm_token
+      VERDACCIO_APPDIR: /opt/verdaccio
+      VERDACCIO_USER_NAME: verdaccio
+      VERDACCIO_PROTOCOL: http
+      VERDACCIO_PORT: 4873
+      VERDACCIO_USER_UID: 10001
+
+# secret keys
+secrets:
+  npm_token:
+    file: ./npm_token.txt
