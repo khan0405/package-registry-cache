@@ -16,6 +16,7 @@ services:
       - 3030:3030
     volumes:
       - ./_data/alpine-proxy:/app/data
+      - ./resolv.conf:/etc/resolv.conf
     restart: unless-stopped
     environment:
       - PORT=3030
@@ -33,6 +34,7 @@ services:
     restart: unless-stopped
     volumes:
       - ./_data/registry:/var/lib/registry
+      - ./resolv.conf:/etc/resolv.conf
 
   # Local NPM private registry and proxy
   verdaccio:
@@ -46,6 +48,7 @@ services:
     volumes:
       - ./_data/verdaccio:/verdaccio/storage
       - ./verdaccio/plugins:/verdaccio/plugins
+      - ./resolv.conf:/etc/resolv.conf
     restart: unless-stopped
     environment:
       NPM_TOKEN: /run/secrets/npm_token
@@ -59,3 +62,9 @@ services:
 secrets:
   npm_token:
     file: ./npm_token.txt
+
+# network
+networks: 
+  default:
+    name: cicd
+    driver: bridge
