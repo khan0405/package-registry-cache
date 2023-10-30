@@ -3,6 +3,21 @@ name: cicd
 
 services:
   # bitbucket ci/cd
+  # bitbucket:
+  #   container_name: runner-
+  #   image: docker-public.packages.atlassian.com/sox/atlassian/bitbucket-pipelines-runner:1
+  #   environment:
+  #     - ACCOUNT_UUID=
+  #     - RUNNER_UUID=
+  #     - OAUTH_CLIENT_ID=
+  #     - OAUTH_CLIENT_SECRET=
+  #     - RUNTIME_PREREQUISITES_ENABLED=true
+  #     - WORKING_DIRECTORY=/tmp
+  #   volumes:
+  #     - /tmp:/tmp
+  #     - /var/run/docker.sock:/var/run/docker.sock
+  #     - /var/lib/docker/containers:/var/lib/docker/containers:ro
+  #     - ./resolv.conf:/etc/resolv.conf
 
   # others ci/cd
 
